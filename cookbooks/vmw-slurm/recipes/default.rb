@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: gengine
+# Cookbook Name:: vmw-slurm
 # Recipe:: default
 #
 # Copyright 2015, Andrew Nelson
@@ -38,16 +38,6 @@ user "slurmadmin" do
 	home "/home/slurmadmin"
 	shell "/bin/bash"
 	password "$1$KiyeRecV$djdasp3PwYXCbP8k0ihjs1"
-end
-
-user "nelsonad" do
-	supports :manage_home => true
-	comment "example grid user"
-	uid 1235
-	gid "users"
-	home "/home/nelsonad"
-	shell "/bin/bash"
-	password "$1$o3AIBTxH$R.1sCQPUdtej0qKybtO4I1"
 end
 
 cookbook_file "/etc/hosts" do
@@ -232,6 +222,12 @@ cookbook_file "/etc/slurm/slurm.conf" do
 	group "users"
 end
 
+#template '/etc/slurm/slurm.conf' do
+#  source 'slurm.conf.erb'
+#  variables config: node[:slurm][:master]
+#  action :create
+#end
+
 directory "/var/spool/slurmd" do
 	owner "slurmadmin"
 	group "users"
@@ -312,11 +308,5 @@ end
 #	group "users"
 #end
 
-#cookbook_file "/home/nelsonad/.bashrc" do
-#	source ".bashrc"
-#	mode 00700
-#	owner "nelsonad"
-#	group "users"
-#end
 
 
