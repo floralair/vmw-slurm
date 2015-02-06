@@ -32,7 +32,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define :grid1worker0 do |grid1worker0|
 	grid1worker0.vm.network "private_network", ip: "172.16.64.11"
-  grid1worker0.vm.network "forwarded_port", guest: 80, host: 8080
+#  grid1worker0.vm.network "forwarded_port", guest: 80, host: 8080
 	grid1worker0.vm.host_name = "grid1worker0.vpod.local"
 	config.omnibus.chef_version = :latest
 	grid1worker0.vm.provision :chef_solo do |chef|
@@ -42,6 +42,34 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 #    chef.roles_path = "roles"
 #     chef.add_role("slurm-worker")
 	  end
+  end
+
+  config.vm.define :grid1worker1 do |grid1worker1|
+  grid1worker1.vm.network "private_network", ip: "172.16.64.12"
+#  grid1worker1.vm.network "forwarded_port", guest: 80, host: 8080
+  grid1worker1.vm.host_name = "grid1worker1.vpod.local"
+  config.omnibus.chef_version = :latest
+  grid1worker1.vm.provision :chef_solo do |chef|
+    chef.cookbooks_path = "cookbooks"
+    chef.add_recipe "vmw-slurm"
+    chef.add_recipe "vmw-slurm::worker"
+#    chef.roles_path = "roles"
+#     chef.add_role("slurm-worker")
+    end
+  end
+
+  config.vm.define :grid1worker2 do |grid1worker2|
+  grid1worker2.vm.network "private_network", ip: "172.16.64.13"
+#  grid1worker2.vm.network "forwarded_port", guest: 80, host: 8080
+  grid1worker2.vm.host_name = "grid1worker2.vpod.local"
+  config.omnibus.chef_version = :latest
+  grid1worker2.vm.provision :chef_solo do |chef|
+    chef.cookbooks_path = "cookbooks"
+    chef.add_recipe "vmw-slurm"
+    chef.add_recipe "vmw-slurm::worker"
+#    chef.roles_path = "roles"
+#     chef.add_role("slurm-worker")
+    end
   end
 
  end
