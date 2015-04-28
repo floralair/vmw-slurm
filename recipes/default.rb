@@ -15,6 +15,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+include_recipe "hadoop_common::pre_run"
+include_recipe "hadoop_common::mount_disks"
+include_recipe "hadoop_cluster::update_attributes"
+
+master_node = master_node_fqdn
+all_workers_fqdn = worker_node_fqdn
 
 user "slurmadmin" do
 	supports :manage_home => true
@@ -210,10 +216,10 @@ end
 
 template '/etc/slurm/slurm.conf' do
   source 'slurm.conf.erb'
-  variables({
-	:master => node[:slurm][:master],
-	:workers => node[:slurm][:workers]
-  })
+  variables(
+	:master => master_node,
+	:workers => all_workers_fqdn 
+  )
   action :create
 end
 

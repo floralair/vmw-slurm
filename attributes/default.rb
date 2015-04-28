@@ -15,4 +15,5 @@
 default[:slurm][:version]			= '14.11.3'
 default[:slurm][:workdir]			= '/slurm'
 default[:slurm][:cluster_name]			= node[:cluster_name]
-
+default[:slurm][:slurm_worker]			= ''
+default[:slurm][:slurm_master]			= ''
