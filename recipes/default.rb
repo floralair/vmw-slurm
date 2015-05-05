@@ -19,6 +19,7 @@ include_recipe "hadoop_common::pre_run"
 include_recipe "hadoop_common::mount_disks"
 include_recipe "hadoop_cluster::update_attributes"
 
+<<<<<<< HEAD
     workers = all_providers_fqdn_for_role("slurm_worker")
     workers_fqdn = workers.join(",")
     workers_shortname = workers_fqdn.gsub('.asurite.ad.asu.edu','')
@@ -30,6 +31,10 @@ include_recipe "hadoop_cluster::update_attributes"
 #      workers = workers.gsub(/\]|\[|\"/,"")
 #    end
 #  end
+=======
+master_node = master_node_fqdn
+all_workers_fqdn = worker_node_fqdn
+>>>>>>> bb8bb09e2dd92916e7a0c10044e86585a8ec46ad
 
 user "slurmadmin" do
 	supports :manage_home => true
@@ -226,8 +231,13 @@ end
 template '/etc/slurm/slurm.conf' do
   source 'slurm.conf.erb'
   variables(
+<<<<<<< HEAD
 	:master => master,
 	:workers => workers_shortname
+=======
+	:master => master_node,
+	:workers => all_workers_fqdn 
+>>>>>>> bb8bb09e2dd92916e7a0c10044e86585a8ec46ad
   )
   action :create
 end
@@ -298,4 +308,22 @@ service "slurm" do
 	action [ :enable, :start ]
 end
 
+<<<<<<< HEAD
+=======
+#cookbook_file "/root/.bashrc" do
+#	source ".bashrc"
+#	mode 00700
+#	owner "root"
+#	group "root"
+#end
+
+#cookbook_file "/home/slurmadmin/.bashrc" do
+#	source ".bashrc"
+#	mode 00700
+#	owner "slurmadmin"
+#	group "users"
+#end
+
+
+>>>>>>> bb8bb09e2dd92916e7a0c10044e86585a8ec46ad
 
