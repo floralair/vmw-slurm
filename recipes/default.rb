@@ -21,7 +21,8 @@ include_recipe "hadoop_cluster::update_attributes"
 
     workers = all_providers_fqdn_for_role("slurm_worker")
     workers_fqdn = workers.join(",")
-    workers_shortname = workers_fqdn.gsub('.asurite.ad.asu.edu','')
+    workers_trim = workers_fqdn.gsub(/\]|\[|\"/,"") 
+    workers_shortname = workers_fqdn.gsub('vpoc.asurite.ad.asu.edu','')
     master = all_providers_fqdn_for_role("slurm_master").last
 
 user "slurmadmin" do

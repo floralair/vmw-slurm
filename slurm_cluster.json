@@ -5,11 +5,7 @@
     {
       "name": "master",
       "roles": [
-<<<<<<< HEAD
         "slurm_master"
-=======
-        "slurm-master"
->>>>>>> bb8bb09e2dd92916e7a0c10044e86585a8ec46ad
       ],
       "instanceNum": 1,
       "cpuNum": 2,
@@ -23,11 +19,7 @@
     {
       "name": "worker",
       "roles": [
-<<<<<<< HEAD
         "slurm_worker"
-=======
-        "slurm-worker"
->>>>>>> bb8bb09e2dd92916e7a0c10044e86585a8ec46ad
       ],
       "instanceNum": 1,
       "cpuNum": 2,
