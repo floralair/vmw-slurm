@@ -19,11 +19,17 @@ include_recipe "hadoop_common::pre_run"
 include_recipe "hadoop_common::mount_disks"
 include_recipe "hadoop_cluster::update_attributes"
 
+    node_fqdn = node[:fqdn]
+    delimiter = '.'
+    domain = node_fqdn.slice(node_fqdn.index(delimiter)..-1) 
+
     workers = all_providers_fqdn_for_role("slurm_worker")
     workers_fqdn = workers.join(",")
     workers_trim = workers_fqdn.gsub(/\]|\[|\"/,"") 
-    workers_shortname = workers_fqdn.gsub('.vpoc.asurite.ad.asu.edu','')
+    workers_shortname = workers_fqdn.gsub(domain,'')
+
     master = all_providers_fqdn_for_role("slurm_master").last
+    master_shortname = master.gsub(domain,'')
 
 user "slurmadmin" do
 	supports :manage_home => true
@@ -191,7 +197,7 @@ end
 template '/etc/slurm/slurm.conf' do
   source 'slurm.conf.erb'
   variables(
-	:master => master,
+	:master => master_shortname,
 	:workers => workers_shortname
   )
   action :create
