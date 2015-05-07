@@ -135,16 +135,22 @@ directory "/var/run/munge" do
 	action :create
 end
 
-execute "build-munge-key" do
-	cwd "/slurm"
-	command "dd if=/dev/urandom bs=1 count=1024 >/etc/munge/munge.key"
-        not_if { ::File.exists?("/etc/munge/munge.key")}
-end
+#execute "build-munge-key" do
+#	cwd "/slurm"
+#	command "dd if=/dev/urandom bs=1 count=1024 >/etc/munge/munge.key"
+#        not_if { ::File.exists?("/etc/munge/munge.key")}
+#end
 
-execute "sha1sum-munge-key" do
-	cwd "/slurm"
-	command "echo -n 'foo' | sha1sum | cut -d' ' -f1 >/etc/munge/munge.key"
-        not_if { ::File.exists?("/etc/munge/munge.key")}
+#execute "sha1sum-munge-key" do
+#	cwd "/slurm"
+#	command "echo -n 'foo' | sha1sum | cut -d' ' -f1 >/etc/munge/munge.key"
+#        not_if { ::File.exists?("/etc/munge/munge.key")}
+#end
+
+template "/etc/munge/munge.key" do
+  source "munge.key.erb"
+  owner "munge"
+  variables({:cluster=>master_shortname})
 end
 
 execute "chown-munge-key" do
