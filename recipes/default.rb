@@ -176,6 +176,7 @@ execute "install-slurm-rpms" do
 	cwd "/home/serengeti/rpmbuild/RPMS/x86_64"
 	user "root"
 	command "rpm -ivh slurm*.rpm"
+        not_if { ::File.exists?("/etc/rc.d/init.d/slurm")}
 end
 
 template '/etc/slurm/slurm.conf' do
