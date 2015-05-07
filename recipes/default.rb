@@ -22,7 +22,7 @@ include_recipe "hadoop_cluster::update_attributes"
     workers = all_providers_fqdn_for_role("slurm_worker")
     workers_fqdn = workers.join(",")
     workers_trim = workers_fqdn.gsub(/\]|\[|\"/,"") 
-    workers_shortname = workers_fqdn.gsub('vpoc.asurite.ad.asu.edu','')
+    workers_shortname = workers_fqdn.gsub('.vpoc.asurite.ad.asu.edu','')
     master = all_providers_fqdn_for_role("slurm_master").last
 
 user "slurmadmin" do
@@ -98,6 +98,7 @@ end
 execute "rpm-munge" do
 	cwd "/root/rpmbuild/RPMS/x86_64"
 	command "rpm -ivh munge*.rpm"
+        not_if { ::File.exists?("/usr/bin/munge")}
 end
 
 directory "/etc/munge" do
@@ -131,11 +132,13 @@ end
 execute "build-munge-key" do
 	cwd "/slurm"
 	command "dd if=/dev/urandom bs=1 count=1024 >/etc/munge/munge.key"
+        not_if { ::File.exists?("/etc/munge/munge.key")}
 end
 
 execute "sha1sum-munge-key" do
 	cwd "/slurm"
 	command "echo -n 'foo' | sha1sum | cut -d' ' -f1 >/etc/munge/munge.key"
+        not_if { ::File.exists?("/etc/munge/munge.key")}
 end
 
 execute "chown-munge-key" do
@@ -173,42 +176,17 @@ cookbook_file "/slurm/slurm-14.11.3.tar.bz2" do
 	group "users"
 end
 
-#execute "untar-slurm" do
-#	cwd "/slurm"
-#	command "tar --bzip -x -f slurm*tar.bz2"
-#end
-
-#execute "configure-slurm" do
-#	cwd "/slurm/slurm-14.11.3"
-#	command "./configure"
-#end
-
-#execute "make-slurm" do
-#	cwd "/slurm/slurm-14.11.3"
-#	command "./make"
-#end
-
-#execute "make-install-slurm" do
-#	cwd "/slurm/slurm-14.11.3"
-#	command "./make install"
-#end
-
 execute "build-slurm-rpms" do
 	cwd "/slurm"
 	command "rpmbuild -ta slurm-14.11.3.tar.bz2"
+        not_if { ::File.exists?("/etc/rc.d/init.d/slurm")}
 end
 
 execute "install-slurm-rpms" do
 	cwd "/root/rpmbuild/RPMS/x86_64"
 	command "rpm -ivh slurm*.rpm"
+        not_if { ::File.exists?("/etc/rc.d/init.d/slurm")}
 end
-
-#cookbook_file "/etc/slurm/slurm.conf" do
-#	source "slurm.conf"
-#	mode 00755
-#	owner "slurmadmin"
-#	group "users"
-#end
 
 template '/etc/slurm/slurm.conf' do
   source 'slurm.conf.erb'
