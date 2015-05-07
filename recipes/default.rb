@@ -147,20 +147,10 @@ end
 #        not_if { ::File.exists?("/etc/munge/munge.key")}
 #end
 
-template "/etc/munge/munge.key" do
-  source "munge.key.erb"
-  owner "munge"
-  variables({:cluster=>master_shortname})
-end
-
-execute "chown-munge-key" do
-	cwd "slurm"
-	command "chown slurmadmin /etc/munge/munge.key"
-end
-
-execute "chmod-munge-key" do
-	cwd "/slurm"
-	command "chmod 0400 /etc/munge/munge.key"
+cookbook_file "/etc/munge/munge.key" do
+  source "munge.key"
+  owner "slurmadmin"
+  mode 00400
 end
 
 cookbook_file "/etc/sysconfig/munge" do
