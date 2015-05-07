@@ -92,17 +92,17 @@ end
 cookbook_file "/slurm/munge-0.5.11.tar.bz2" do
 	source "munge-0.5.11.tar.bz2"
 	mode 00711
-	owner "slurmadmin"
-	group "users"
+	owner "root"
 end
 
 execute "rpmbuild-munge" do
 	cwd "/slurm"
+	user "root"
 	command "rpmbuild -tb --clean munge-0.5.11.tar.bz2"
 end
 
 execute "rpm-munge" do
-	cwd "/root/rpmbuild/RPMS/x86_64"
+	cwd "/home/serengeti/rpmbuild/RPMS/x86_64"
 	command "rpm -ivh munge*.rpm"
         not_if { ::File.exists?("/usr/bin/munge")}
 end
@@ -134,18 +134,6 @@ directory "/var/run/munge" do
 	mode 00755
 	action :create
 end
-
-#execute "build-munge-key" do
-#	cwd "/slurm"
-#	command "dd if=/dev/urandom bs=1 count=1024 >/etc/munge/munge.key"
-#        not_if { ::File.exists?("/etc/munge/munge.key")}
-#end
-
-#execute "sha1sum-munge-key" do
-#	cwd "/slurm"
-#	command "echo -n 'foo' | sha1sum | cut -d' ' -f1 >/etc/munge/munge.key"
-#        not_if { ::File.exists?("/etc/munge/munge.key")}
-#end
 
 cookbook_file "/etc/munge/munge.key" do
   source "munge.key"
@@ -180,14 +168,14 @@ end
 
 execute "build-slurm-rpms" do
 	cwd "/slurm"
+	user "root"
 	command "rpmbuild -ta slurm-14.11.3.tar.bz2"
-        not_if { ::File.exists?("/etc/rc.d/init.d/slurm")}
 end
 
 execute "install-slurm-rpms" do
-	cwd "/root/rpmbuild/RPMS/x86_64"
+	cwd "/home/serengeti/rpmbuild/RPMS/x86_64"
+	user "root"
 	command "rpm -ivh slurm*.rpm"
-        not_if { ::File.exists?("/etc/rc.d/init.d/slurm")}
 end
 
 template '/etc/slurm/slurm.conf' do
